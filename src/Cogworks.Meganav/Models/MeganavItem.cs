@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cogworks.Meganav.Enums;
 using Newtonsoft.Json;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace Cogworks.Meganav.Models
 {

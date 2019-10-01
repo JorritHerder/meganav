@@ -12,18 +12,17 @@ using Umbraco.Web;
 
 namespace Cogworks.Meganav.ValueConverters
 {
-    [PropertyValueCache(PropertyCacheValue.All, PropertyCacheLevel.Content)]
-    [PropertyValueType(typeof(IEnumerable<MeganavItem>))]
+
     public class MeganavValueConverter : PropertyValueConverterBase
     {
         private bool RemoveNaviHideItems;
 
-        public override bool IsConverter(PublishedPropertyType propertyType)
+        public override bool IsConverter(IPublishedPropertyType propertyType)
         {
-            return propertyType.PropertyEditorAlias.Equals(Constants.PropertyEditorAlias);
+            return propertyType.EditorAlias.Equals(Constants.PropertyEditorAlias);
         }
 
-        public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
+        public override object ConvertIntermediateToObject(IPublishedElement owner, IPublishedPropertyType propertyType, PropertyCacheLevel referenceCacheLevel, object source, bool preview)
         {
             var sourceString = source?.ToString();
 
@@ -32,7 +31,7 @@ namespace Cogworks.Meganav.ValueConverters
                 return null;
             }
 
-            var preValues = PreValueHelper.GetPreValues(propertyType.DataTypeId);
+            var preValues = PreValueHelper.GetPreValues(propertyType.DataType.Id);
 
             if (preValues.ContainsKey("removeNaviHideItems"))
             {
@@ -47,7 +46,7 @@ namespace Cogworks.Meganav.ValueConverters
             }
             catch (Exception ex)
             {
-                LogHelper.Error<MeganavValueConverter>("Failed to convert Meganav", ex);
+                Umbraco.Core.Composing.Current.Logger.Error<MeganavValueConverter>("Failed to convert Meganav", ex);
             }
 
             return null;
@@ -64,7 +63,7 @@ namespace Cogworks.Meganav.ValueConverters
                 // it's likely a content item
                 if (item.Id > 0)
                 {
-                    var umbracoContent = UmbracoContext.Current.ContentCache.GetById(item.Id);
+                    var umbracoContent = Umbraco.Web.Composing.Current.UmbracoHelper.Content(item.Id);
 
                     if (umbracoContent != null)
                     {

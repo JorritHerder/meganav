@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core;
+using Umbraco.Web.Composing;
 
 namespace Cogworks.Meganav.Helpers
 {
@@ -8,12 +9,12 @@ namespace Cogworks.Meganav.Helpers
     {
         public static IDictionary<string, string> GetPreValues(int dataTypeId)
         {
-            var context = ApplicationContext.Current;
-            var dataTypeService = context.Services.DataTypeService;
+            var context = Current.UmbracoContext;
+            var dataTypeService = Current.Services.DataTypeService;
 
-            var preValueCollection = dataTypeService.GetPreValuesCollectionByDataTypeId(dataTypeId);
+            var preValueCollection = dataTypeService.GetDataType(dataTypeId);
 
-            return preValueCollection.PreValuesAsDictionary.ToDictionary(x => x.Key, x => x.Value.Value);
+            return preValueCollection.ToDictionary(x => x.Key, x => x.Key);
         }
     }
 }
